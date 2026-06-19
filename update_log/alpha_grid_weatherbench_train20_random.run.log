@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/root/project/huangchao/zhengyanggong/weather_agent/scripts/benchmarks/multi/tune_qe_weatherbench_train100.py", line 27, in <module>
+    from skimage.metrics import peak_signal_noise_ratio as sk_psnr
+ModuleNotFoundError: No module named 'skimage'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/root/project/huangchao/zhengyanggong/weather_agent/scripts/benchmarks/multi/tune_qe_weatherbench_train100.py", line 30, in <module>
+    raise RuntimeError(
+RuntimeError: scikit-image is required for PSNR/SSIM computation. Please install it in the current environment.
+
+ERROR conda.cli.main_run:execute(125): `conda run python weather_agent/scripts/benchmarks/multi/tune_qe_weatherbench_train100.py --tasks derain dehaze desnow --split train --max_samples 20 --sample_mode random --seed 20260419 --report_json weather_agent/update_log/alpha_grid_weatherbench_train20_random.json --work_dir weather_agent/tmp/alpha_grid_weatherbench_train20_random` failed. (See above for error)

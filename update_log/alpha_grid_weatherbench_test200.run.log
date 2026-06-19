@@ -1,0 +1,83 @@
+
+=== Grid Search Start: derain ===
+Loading pretrained model MANIQA from /root/.cache/torch/hub/pyiqa/ckpt_koniq10k.pt
+Loading pretrained model CFANet from /root/.cache/torch/hub/pyiqa/cfanet_nr_koniq_res50-9a73138b.pth
+[derain] processed 10/200
+[derain] processed 20/200
+[derain] processed 30/200
+[derain] processed 40/200
+[derain] processed 50/200
+[derain] processed 60/200
+[derain] processed 70/200
+[derain] processed 80/200
+[derain] processed 90/200
+[derain] processed 100/200
+[derain] processed 110/200
+[derain] processed 120/200
+[derain] processed 130/200
+[derain] processed 140/200
+[derain] processed 150/200
+[derain] processed 160/200
+[derain] processed 170/200
+[derain] processed 180/200
+[derain] processed 190/200
+[derain] processed 200/200
+=== Grid Search Done: derain | best_alpha=0.9 | evaluated=200 ===
+
+=== Grid Search Start: dehaze ===
+Loading pretrained model MANIQA from /root/.cache/torch/hub/pyiqa/ckpt_koniq10k.pt
+Loading pretrained model CFANet from /root/.cache/torch/hub/pyiqa/cfanet_nr_koniq_res50-9a73138b.pth
+[dehaze] processed 10/200
+[dehaze] processed 20/200
+[dehaze] processed 30/200
+[dehaze] processed 40/200
+[dehaze] processed 50/200
+[dehaze] processed 60/200
+[dehaze] processed 70/200
+[dehaze] processed 80/200
+[dehaze] processed 90/200
+[dehaze] processed 100/200
+[dehaze] processed 110/200
+[dehaze] processed 120/200
+[dehaze] processed 130/200
+[dehaze] processed 140/200
+[dehaze] processed 150/200
+[dehaze] processed 160/200
+[dehaze] processed 170/200
+[dehaze] processed 180/200
+[dehaze] processed 190/200
+[dehaze] processed 200/200
+=== Grid Search Done: dehaze | best_alpha=0.6 | evaluated=200 ===
+
+=== Grid Search Start: desnow ===
+Loading pretrained model MANIQA from /root/.cache/torch/hub/pyiqa/ckpt_koniq10k.pt
+Loading pretrained model CFANet from /root/.cache/torch/hub/pyiqa/cfanet_nr_koniq_res50-9a73138b.pth
+[desnow] processed 10/200
+[desnow] processed 20/200
+[desnow] processed 30/200
+[desnow] processed 40/200
+[desnow] processed 50/200
+[desnow] processed 60/200
+[desnow] processed 70/200
+[desnow] processed 80/200
+[desnow] processed 90/200
+[desnow] processed 100/200
+[desnow] processed 110/200
+[desnow] processed 120/200
+[desnow] processed 130/200
+[desnow] processed 140/200
+[desnow] processed 150/200
+[desnow] processed 160/200
+[desnow] processed 170/200
+[desnow] processed 180/200
+[desnow] processed 190/200
+[desnow] processed 200/200
+=== Grid Search Done: desnow | best_alpha=1.0 | evaluated=200 ===
+
+Report saved to: weather_agent/update_log/alpha_grid_weatherbench_test200.json
+
+===== Best Alpha Summary =====
+derain: best_alpha=0.9, best_composite=108.98557818053843, evaluated=200
+dehaze: best_alpha=0.6, best_composite=65.65455431277454, evaluated=200
+desnow: best_alpha=1.0, best_composite=71.300330076045, evaluated=200
+

@@ -1,0 +1,54 @@
+{
+  "dataset_root": "/root/project/huangchao/zhengyanggong/weather_agent/dataset/multi/WeatherBench",
+  "split": "test",
+  "max_samples": 1,
+  "alphas": [
+    0.0
+  ],
+  "tasks": {
+    "dehaze": {
+      "task": "dehaze",
+      "wb_key": "haze",
+      "qe_task": "dehaze",
+      "requested_samples": 1,
+      "skipped_samples": 0,
+      "evaluated_samples": 1,
+      "best_alpha": 0.0,
+      "best_composite": 77.45678611372335,
+      "rows": [
+        {
+          "alpha": 0.0,
+          "count": 1,
+          "psnr_mean": 12.99185343359335,
+          "ssim_mean": 0.6446493268013,
+          "composite": 77.45678611372335,
+          "pick_hist": {
+            "ridcp": 1
+          }
+        }
+      ]
+    },
+    "derain": {
+      "task": "derain",
+      "wb_key": "rain",
+      "qe_task": "derain",
+      "requested_samples": 1,
+      "skipped_samples": 0,
+      "evaluated_samples": 1,
+      "best_alpha": 0.0,
+      "best_composite": 108.94126630506561,
+      "rows": [
+        {
+          "alpha": 0.0,
+          "count": 1,
+          "psnr_mean": 24.554273850536802,
+          "ssim_mean": 0.8438699245452881,
+          "composite": 108.94126630506561,
+          "pick_hist": {
+            "mprnet": 1
+          }
+        }
+      ]
+    }
+  }
+}

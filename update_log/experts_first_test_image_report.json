@@ -1,0 +1,76 @@
+{
+  "dataset_root": "/root/project/huangchao/zhengyanggong/weather_agent/dataset/multi/WeatherBench",
+  "split": "test",
+  "max_samples": 1,
+  "alphas": [
+    0.5
+  ],
+  "tasks": {
+    "derain": {
+      "task": "derain",
+      "wb_key": "rain",
+      "qe_task": "derain",
+      "requested_samples": 1,
+      "skipped_samples": 0,
+      "evaluated_samples": 1,
+      "best_alpha": 0.5,
+      "best_composite": 108.94126630506561,
+      "rows": [
+        {
+          "alpha": 0.5,
+          "count": 1,
+          "psnr_mean": 24.554273850536802,
+          "ssim_mean": 0.8438699245452881,
+          "composite": 108.94126630506561,
+          "pick_hist": {
+            "mprnet": 1
+          }
+        }
+      ]
+    },
+    "dehaze": {
+      "task": "dehaze",
+      "wb_key": "haze",
+      "qe_task": "dehaze",
+      "requested_samples": 1,
+      "skipped_samples": 0,
+      "evaluated_samples": 1,
+      "best_alpha": 0.5,
+      "best_composite": 71.61917114210328,
+      "rows": [
+        {
+          "alpha": 0.5,
+          "count": 1,
+          "psnr_mean": 10.891318559171768,
+          "ssim_mean": 0.6072785258293152,
+          "composite": 71.61917114210328,
+          "pick_hist": {
+            "maxim": 1
+          }
+        }
+      ]
+    },
+    "desnow": {
+      "task": "desnow",
+      "wb_key": "snow",
+      "qe_task": "desnow",
+      "requested_samples": 1,
+      "skipped_samples": 0,
+      "evaluated_samples": 1,
+      "best_alpha": 0.5,
+      "best_composite": 72.36742846552947,
+      "rows": [
+        {
+          "alpha": 0.5,
+          "count": 1,
+          "psnr_mean": 16.498635931654956,
+          "ssim_mean": 0.5586879253387451,
+          "composite": 72.36742846552947,
+          "pick_hist": {
+            "desnownet": 1
+          }
+        }
+      ]
+    }
+  }
+}

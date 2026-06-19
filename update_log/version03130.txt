@@ -1,0 +1,26 @@
+可以加一个“自动根据图片分辨率选择档位（大图默认 fast，小图默认 quality）”的自动模式
+
+现在的命令格式
+
+单图运行：
+bash [run_project.sh](http://_vscodecontentref_/2) <input> <output> <auto|manual> [fast|balanced|quality]
+一键运行：
+bash [one_click_run.sh](http://_vscodecontentref_/3) <input> <output> <auto|manual> [fast|balanced|quality]
+批量运行：
+bash [run_batch_inference.sh](http://_vscodecontentref_/4) <input_dir> <output_root> <auto|manual> [fast|balanced|quality]
+示例
+
+自动：bash [run_project.sh](http://_vscodecontentref_/5) dataset/LQ/example.png outputs_run auto
+手动快档：bash [run_project.sh](http://_vscodecontentref_/6) dataset/LQ/example.png outputs_run manual fast
+批量手动高质：bash [run_batch_inference.sh](http://_vscodecontentref_/7) dataset/LQ outputs_batch manual quality
+自动模式逻辑
+
+自动根据输入图像（批量则采样目录图片）分辨率估计档位：
+大图偏 fast
+小图偏 quality
+中间 balanced
+已完成验证
+
+非法手动参数会立即报错（已验证）
+auto 会正确打印所选档位（已验证）
+README 用法已同步更新：README.md

@@ -1,0 +1,71 @@
+一键准备好项目环境：bash scripts/setup_weather_all_envs.sh
+依次创建三个环境：weather_agent、weather_agent_ridcp、weather_agent_nafnet
+
+一键准备环境并运行一次推理：
+
+```bash
+bash scripts/one_click_run.sh
+```
+
+1）首次安装环境：一条命令
+在项目根目录运行：
+
+bash scripts/setup_weather_all_envs.sh
+这条命令会一次性准备：
+
+weather_agent
+weather_agent_ridcp
+weather_agent_nafnet
+对应说明见 README.md。
+
+2）后续做实验时的启动命令
+单张图片验证
+conda run -n weather_agent python [main.py](http://_vscodecontentref_/0) --input [example.png](http://_vscodecontentref_/1) --output outputs_check
+大量数据集批量运行
+bash scripts/run_batch_inference.sh dataset/LQ outputs_batch
+这个批量脚本是我刚加的：
+
+scripts/run_batch_inference.sh
+它的行为是：
+
+自动遍历输入目录里的图片
+每张图生成一个独立输出目录
+最终结果保存在：
+final_output.png
+支持断点续跑：
+已有 final_output.png 的样本自动跳过
+日志文件：
+outputs_batch/run_batch.log
+汇总文件：
+outputs_batch/run_batch_summary.txt
+
+3）如果你想“一条命令安装+直接跑一次”
+也可以用：
+
+bash scripts/one_click_run.sh
+脚本位置：
+
+scripts/one_click_run.sh 这个是带安装逻辑的脚本 第一次运行该项目使用即可
+
+首次装环境：bash scripts/setup_weather_all_envs.sh
+后续批量实验：bash scripts/run_batch_inference.sh 数据集目录 输出目录
+
+
+独立安装环境新加：MAXIM 
+weather_agent_maxim
+
+
+你现在已经具备的“可写进论文”的内容
+你现在完全可以写：
+
+本项目借鉴 4KAgent 的 Perception–Planning–Execution–Evaluation 框架
+面向恶劣天气图像恢复场景构建轻量化 Weather Restoration Agent
+聚焦 3 个 restoration 任务：
+Deraining
+Dehazing
+Denoising
+感知模块使用 CLIP 零样本识别退化
+规划模块基于经验规则生成恢复顺序
+执行模块采用多专家并行恢复
+评价模块基于无参考图像质量评价自动选择每步最优结果
+

@@ -1,0 +1,54 @@
+{
+  "dataset_root": "/root/project/huangchao/zhengyanggong/weather_agent/dataset/multi/WeatherBench",
+  "split": "test",
+  "max_samples": 1,
+  "alphas": [
+    0.0,
+    0.5,
+    1.0
+  ],
+  "tasks": {
+    "desnow": {
+      "task": "desnow",
+      "wb_key": "snow",
+      "qe_task": "desnow",
+      "requested_samples": 1,
+      "skipped_samples": 0,
+      "evaluated_samples": 1,
+      "best_alpha": 1.0,
+      "best_composite": 72.85482860319264,
+      "rows": [
+        {
+          "alpha": 0.0,
+          "count": 1,
+          "psnr_mean": 17.825882453922127,
+          "ssim_mean": 0.545452356338501,
+          "composite": 72.37111808777223,
+          "pick_hist": {
+            "jstasr": 1
+          }
+        },
+        {
+          "alpha": 0.5,
+          "count": 1,
+          "psnr_mean": 17.825882453922127,
+          "ssim_mean": 0.545452356338501,
+          "composite": 72.37111808777223,
+          "pick_hist": {
+            "jstasr": 1
+          }
+        },
+        {
+          "alpha": 1.0,
+          "count": 1,
+          "psnr_mean": 17.40469909422048,
+          "ssim_mean": 0.5545012950897217,
+          "composite": 72.85482860319264,
+          "pick_hist": {
+            "diffplugin": 1
+          }
+        }
+      ]
+    }
+  }
+}

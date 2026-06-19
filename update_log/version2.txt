@@ -1,0 +1,57 @@
+要把感知模块从 “自己训练的 ResNet” 改成接入一个 轻量的视觉语言模型 (VLM)，而且必须是 免费开源又能胜任雨/雾/噪检测。
+
+经过考察，满足这些条件的最佳选择就是 OpenAI CLIP：
+
+📦 免费开源，直接 pip install git+https://github.com/openai/CLIP.git；
+🧠 预训于大规模图文对，支持零-shot 分类；
+🪶 模型小（ViT‑B/32: ~400 MB），推理速度快，GPU/CPU都能跑；
+🗣 可以通过简单的文本提示“a photo of rain / without rain”等来判断是否存在某种退化，无需训练。
+
+变动概览
+
+感知模块 (perception_module.py)
+
+删除 ResNet + 训练逻辑。
+加载 CLIP ViT‑B/32，对每个标签（rain/haze/noise）分别设定正/负提示。
+使用 CLIP 编码器计算图像与文本相似度，softmax 得到概率。
+
+无需 load_model() 或任何训练函数；CLIP 自带预训练权重。
+
+主程序 (main.py)
+
+修改为直接调用 predict_degradation(input)，删除 --model 参数。
+
+训练脚本
+scripts/train_perception.py 被简化为说明文件，提示“CLIP 零-shot，无需训练”。
+
+依赖
+在 requirements.txt 开头加入 git+https://github.com/openai/CLIP.git
+
+文档
+README/version1.txt 均更新：
+
+在简介里添加“感知模块采用 CLIP 零-shot”；
+去掉训练流程说明，标注无需训练。
+
+为什么不用其它模型？
+Open‑source & free：CLIP 是完全可离线使用，其它知名 VLM（如 Gemini、GPT‑4V 等）往往依赖 API。
+轻量：ViT‑B/32 只有 89M 参数，可在单卡/CPU 上快速执行。
+任务适配：零-shot 文本提示对“雨/雾/噪”检测表现良好，可作为多标签分类器使用，满足你简单感知模块的需求。
+
+使用流程（不再训练）
+# 安装依赖（CLIP 已包含）
+pip install -r requirements.txt
+
+# 运行示例
+python main.py --input example.jpg --output results/
+
+main.py 会输出类似：
+Detected degradation: [0.87 0.12 0.05]
+Restoration plan: ['derain']
+...
+
+对毕设的意义
+保留 “感知–规划–执行–评价” 框架；
+感知模块与原论文思路一致（原项目用大模型，这里换成轻量 CLIP）；
+不再需要收集标签或训练分类器，降低实现成本；
+后续可选：如果有时间，可比较 CLIP vs. 你原来的 CNN 性能差异，作为实验内容。

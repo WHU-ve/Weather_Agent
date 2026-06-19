@@ -1,0 +1,72 @@
+总体架构
+
+你的项目是一个“感知→规划→多专家执行→质量评估→产出最终图像”的流水线，主入口在 main.py。
+任务类型主要是天气与退化恢复（去雨、去雾、去噪，且已扩展到运动去模糊插入逻辑），核心调度在 restoration_agent.py。
+专家统一抽象在 utils/tool.py + utils/multitask_tools.py，每个子任务工具箱在各自 __init__.py 下注册。
+质量选择器在 quality_evaluator.py，用无参考指标对候选结果打分并选最优。
+阶段1：环境与资源准备（运行前）
+
+你现在是“多 conda 环境分工”模式：主流程在 weather_agent，特定专家分流到 weather_agent_ridcp、weather_agent_nafnet、weather_agent_maxim、weather_agent_diffplugin。
+环境安装由 scripts/setup_weather_all_envs.sh 串起来，按拆分依赖文件安装：
+requirements/requirements_weather_agent.txt
+requirements/requirements_weather_agent_ridcp.txt
+requirements/requirements_weather_agent_nafnet.txt
+requirements/requirements_weather_agent_maxim.txt
+requirements/requirements_weather_agent_diffplugin.txt
+预训练权重统一放在 pretrained_ckpts，你的 motion_deblurring 5 专家权重已经在本项目内，不依赖外部 4KAgent 路径。
+阶段2：启动入口与参数注入
+
+常用运行入口是 scripts/run_project.sh，它负责：
+接收输入图与输出目录；
+激活主环境；
+启动 main.py。
+你大量使用环境变量做“运行时策略控制”，例如：
+规划阈值：TASK_*_THRESHOLD
+质量评估权重：QE_W_*
+评估归一化：QE_NORMALIZATION
+运动去模糊插入：ENABLE_MOTION_DEBLUR_INSERT、MOTION_DEBLUR_SHARPNESS_THRESHOLD
+去噪防糊：ENABLE_DENOISE_SHARPNESS_GUARD、DENOISE_MIN_SHARPNESS_RATIO
+阶段3：感知（Perception）
+
+在 perception_module.py 中加载 CLIP（本地推理）对输入图做退化语义判别，输出类似 [rain, haze, noise] 的连续强度向量。
+这一步本质上是“零样本视觉打分”，不直接恢复图像，只负责给后续规划提供条件信号。
+阶段4：规划（Task Planning）
+
+在 task_planner.py 中把退化向量转成任务链（plan），例如 ['derain', 'derain', 'denoise']。
+规则特征：
+基于阈值决定是否执行某子任务；
+高雨量可触发二次去雨（double-derain）；
+规划是“可解释规则”，不是黑盒策略网络，适合论文说明与消融。
+阶段5：执行器主循环（多专家并行候选 + 逐步选优）
+
+restoration_agent.py 逐 step 执行计划：
+取当前 step 的工具箱（如 derain、denoise、motion_deblurring）；
+对每个专家创建临时目录 temp_<subtask>_<expert>/input|output；
+调用专家推理脚本，得到候选图；
+调 quality_evaluator.py 打分；
+选最佳候选作为下一 step 输入，并保存 selected_step_*。
+专家实例和命令参数由 utils/multitask_tools.py 提供，包含模型名、脚本路径、ckpt 路径、tile 参数等。
+真实命令执行与环境切换由 utils/tool.py 负责，按专家自动路由到对应 conda 环境。
+阶段6：动态增强逻辑（你最近加的关键部分）
+
+运动去模糊插入：在去雨后，如果锐度不足，可动态往计划里插入 motion_deblurring。
+去噪防糊回滚：去噪后若锐度下降过多，自动回滚到去噪前结果，避免“干净但糊”的副作用。
+这两块都在 restoration_agent.py，属于“质量守护型控制逻辑”，对最终观感提升很关键。
+阶段7：质量评估与候选选择
+
+quality_evaluator.py 对每个专家输出计算多指标综合分（CLIPIQA+/MUSIQ/NIQE 等）。
+你现在支持权重可配与归一化后融合，避免某单一指标尺度主导。
+每一步只把“当步最优图”传给下一步，形成贪心式链式优化。
+阶段8：结果落盘与可追溯产物
+
+最终结果写到输出目录下的 final_output.png。
+中间产物包括：
+temp_*：各专家原始候选；
+selected_step_*：每步被选中的图；
+特殊保护触发时会有 rollback 文件（你之前已验证）。
+这种目录结构非常利于论文复现实验与失败分析。
+你项目当前的“独立性”结论
+
+motion_deblurring 的 5 专家代码、工具目录、权重都在你项目内。
+运行时不需要从外部 4KAgent 目录读取路径。
+所以你当前这个方向已经满足“可独立运行的子系统整合项目”。

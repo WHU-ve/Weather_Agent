@@ -1,0 +1,13 @@
+diffusers==0.17.0
+transformers==4.37.2
+huggingface-hub==0.25.2
+accelerate==0.21.0
+protobuf==3.20.3
+numpy==1.24.3
+pillow==9.5.0
+opencv-python==4.9.0.80
+einops==0.8.0
+PyYAML==6.0.1
+scipy==1.10.1
+safetensors==0.4.5
+ftfy==6.2.0

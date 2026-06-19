@@ -1,0 +1,169 @@
+{
+  "dataset_root": "/root/project/huangchao/zhengyanggong/weather_agent/dataset/multi/WeatherBench",
+  "split": "train",
+  "max_samples": 1,
+  "alphas": [
+    0.0,
+    0.5,
+    0.8,
+    1.0
+  ],
+  "tasks": {
+    "derain": {
+      "task": "derain",
+      "wb_key": "rain",
+      "qe_task": "derain",
+      "requested_samples": 1,
+      "skipped_samples": 0,
+      "evaluated_samples": 1,
+      "best_alpha": 0.0,
+      "best_composite": 112.85355344484947,
+      "rows": [
+        {
+          "alpha": 0.0,
+          "count": 1,
+          "psnr_mean": 28.15664067934653,
+          "ssim_mean": 0.8469691276550293,
+          "composite": 112.85355344484947,
+          "pick_hist": {
+            "xrestormer": 1
+          }
+        },
+        {
+          "alpha": 0.5,
+          "count": 1,
+          "psnr_mean": 26.009067739514474,
+          "ssim_mean": 0.8657332062721252,
+          "composite": 112.582388366727,
+          "pick_hist": {
+            "mprnet": 1
+          }
+        },
+        {
+          "alpha": 0.8,
+          "count": 1,
+          "psnr_mean": 26.009067739514474,
+          "ssim_mean": 0.8657332062721252,
+          "composite": 112.582388366727,
+          "pick_hist": {
+            "mprnet": 1
+          }
+        },
+        {
+          "alpha": 1.0,
+          "count": 1,
+          "psnr_mean": 26.009067739514474,
+          "ssim_mean": 0.8657332062721252,
+          "composite": 112.582388366727,
+          "pick_hist": {
+            "mprnet": 1
+          }
+        }
+      ]
+    },
+    "dehaze": {
+      "task": "dehaze",
+      "wb_key": "haze",
+      "qe_task": "dehaze",
+      "requested_samples": 1,
+      "skipped_samples": 0,
+      "evaluated_samples": 1,
+      "best_alpha": 0.5,
+      "best_composite": 116.42561393896575,
+      "rows": [
+        {
+          "alpha": 0.0,
+          "count": 1,
+          "psnr_mean": 14.489393269980564,
+          "ssim_mean": 0.9225751757621765,
+          "composite": 106.74691084619822,
+          "pick_hist": {
+            "dehazeformer": 1
+          }
+        },
+        {
+          "alpha": 0.5,
+          "count": 1,
+          "psnr_mean": 21.095727264084772,
+          "ssim_mean": 0.9532988667488098,
+          "composite": 116.42561393896575,
+          "pick_hist": {
+            "diffplugin": 1
+          }
+        },
+        {
+          "alpha": 0.8,
+          "count": 1,
+          "psnr_mean": 21.095727264084772,
+          "ssim_mean": 0.9532988667488098,
+          "composite": 116.42561393896575,
+          "pick_hist": {
+            "diffplugin": 1
+          }
+        },
+        {
+          "alpha": 1.0,
+          "count": 1,
+          "psnr_mean": 21.095727264084772,
+          "ssim_mean": 0.9532988667488098,
+          "composite": 116.42561393896575,
+          "pick_hist": {
+            "diffplugin": 1
+          }
+        }
+      ]
+    },
+    "desnow": {
+      "task": "desnow",
+      "wb_key": "snow",
+      "qe_task": "desnow",
+      "requested_samples": 1,
+      "skipped_samples": 0,
+      "evaluated_samples": 1,
+      "best_alpha": 0.5,
+      "best_composite": 65.6518779627128,
+      "rows": [
+        {
+          "alpha": 0.0,
+          "count": 1,
+          "psnr_mean": 15.768000721155193,
+          "ssim_mean": 0.45580992102622986,
+          "composite": 61.348992823778175,
+          "pick_hist": {
+            "starnet": 1
+          }
+        },
+        {
+          "alpha": 0.5,
+          "count": 1,
+          "psnr_mean": 15.367921435002836,
+          "ssim_mean": 0.5028395652770996,
+          "composite": 65.6518779627128,
+          "pick_hist": {
+            "desnownet": 1
+          }
+        },
+        {
+          "alpha": 0.8,
+          "count": 1,
+          "psnr_mean": 15.367921435002836,
+          "ssim_mean": 0.5028395652770996,
+          "composite": 65.6518779627128,
+          "pick_hist": {
+            "desnownet": 1
+          }
+        },
+        {
+          "alpha": 1.0,
+          "count": 1,
+          "psnr_mean": 15.367921435002836,
+          "ssim_mean": 0.5028395652770996,
+          "composite": 65.6518779627128,
+          "pick_hist": {
+            "desnownet": 1
+          }
+        }
+      ]
+    }
+  }
+}

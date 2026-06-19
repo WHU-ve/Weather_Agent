@@ -1,0 +1,65 @@
+你现在这个项目的整体运行流程，可以概括成 6 步：
+
+1) 入口启动
+
+主入口是 main.py。
+输入一张图像路径和输出目录，进入“感知 → 规划 → 执行”。
+2) 感知（CLIP）
+
+在 perception_module.py 用 CLIP 做零样本退化检测，输出雨/雾/噪/雪概率。
+现在默认优先读项目内 CLIP 权重（models/clip）。
+3) 规划（你刚改成双层）
+
+规划器在 task_planner.py。
+主路径：CLIP 直接规划（clip_direct 思路）。
+兜底路径：当不确定时触发 VLM 规划（clip_vlm_fallback），调用 vlm_planner.py。
+你当前可用任务是去雪/去雨/去雾；去噪已被禁用（不删模型，只是不执行）。
+4) VLM 兜底规划（可选触发）
+
+兜底模型默认是 Qwen2.5-VL-7B，本地加载优先用项目内 models 目录。
+输入包含：原图 + CLIP 概率 + CLIP 描述 + direct plan 候选。
+输出最终任务顺序（结构化 plan）。
+5) 执行恢复
+
+执行器在 restoration_agent.py。
+按计划逐步调用专家工具箱（去雪/去雨/去雾），每步跑多专家后做质量评估选最优。
+在新规划模式下默认锁定初始计划，避免动态重规划改写第 0 步。
+6) 输出与评测
+
+单图最终结果是 final_output.png（在你给定输出目录下）。
+批量/基准脚本在 scripts 与其 benchmarks 子目录，产出 per-image 指标和 summary。
+
+刚才那次是失败了。
+失败原因：perception_module.py 以前在 import 时就执行 clip.load(..., device='cuda')，导致 benchmark 脚本虽然还没真正用到 CLIP，也先把显存占掉并 OOM。
+我已经修好了：
+
+现在 CLIP 改成懒加载
+只有真正调用 predict_degradation() 时才初始化
+你的去雪 benchmark 直接走 RestorationAgent.execute_plan(['desnow'], ...) 时，不会再在导入阶段触发 CLIP 占显存
+
+我现在已经替你安排好了
+
+CLIP：改成懒加载，只在真正感知时加载
+CLIP：规划完成后自动释放显存
+Qwen-VL：兜底规划完成后默认自动释放显存
+这样后面的专家阶段就能把 GPU 重新吃满
+现在合理的 GPU 使用方式
+
+规划阶段
+CLIP 用 GPU
+如果触发兜底，Qwen2.5-VL-7B 也用 GPU
+规划结束
+自动释放 CLIP / VLM 显存
+执行阶段
+专家模型再用 GPU 0,1 跑并行
+也就是说，现在已经是你说的“合理安排一下不冲突”的做法了。
+
+对这次去雪 benchmark
+
+其实它直接调用的是 RestorationAgent.execute_plan(['desnow'], ...)
+本身不需要 CLIP/VLM 参与
+所以修完懒加载后，benchmark 阶段就不会再因为规划模型抢显存而炸
+一句话
+
+之前不行，是因为“加载时机错了”
+现在可以了，因为我已经把“规划模型占卡”和“专家执行占卡”拆开并自动释放了

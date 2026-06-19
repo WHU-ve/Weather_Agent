@@ -1,0 +1,62 @@
+{
+  "version": 3,
+  "saved_at_utc": "2026-05-19T12:55:50.396811+00:00",
+  "shared_bounds": {
+    "maniqa": [
+      0.14061265103518966,
+      0.4265043143182992
+    ],
+    "clipiqa": [
+      0.1837959674373269,
+      0.5603283370658756
+    ],
+    "topiq_nr": [
+      0.1679230612516403,
+      0.48506730973720547
+    ],
+    "niqe": [
+      3.881363810143916,
+      9.841173193833804
+    ],
+    "local_contrast": [
+      -0.024944932628422983,
+      1.1336884694732725
+    ],
+    "detail_score": [
+      -0.05677166840527209,
+      0.6691021830635148
+    ],
+    "texture_retention": [
+      -0.04010924414033065,
+      0.5669978058082048
+    ]
+  },
+  "task_main_bounds": {
+    "derain": {
+      "rain_residual_score": [
+        0.43104312752365326,
+        1.0742117659751758
+      ]
+    },
+    "dehaze": {
+      "fog_density_score": [
+        0.17350409436970948,
+        1.0234778311476112
+      ]
+    },
+    "desnow": {
+      "snow_artifact": [
+        0.0,
+        0.2
+      ]
+    }
+  },
+  "config": {
+    "clip_rate_threshold": 0.1,
+    "clip_consecutive_windows": 2,
+    "clip_window_size": 200,
+    "recalib_margin": 0.15,
+    "recalib_min_samples": 100,
+    "recalib_sample_cap": 2000
+  }
+}

@@ -1,0 +1,75 @@
+# ===== 运行时输出 =====
+output/
+outputs/
+tmp/
+
+# ===== 模型权重目录（通过脚本单独下载） =====
+# pretrained_ckpts 是符号链接 → pretrained_ckpts_new
+pretrained_ckpts
+pretrained_ckpts_old
+pretrained_ckpts_old/
+
+# pretrained_ckpts_new：模型权重目录，仅保留 README
+pretrained_ckpts_new/*
+!pretrained_ckpts_new/README.md
+
+# models：LLM/VLM 权重，仅保留 README
+models/*
+!models/README.md
+
+# ===== 模型权重文件（全局排除，包括 utils/ 内嵌的） =====
+*.pth
+*.h5
+*.npz
+*.safetensors
+*.pt
+*.ckpt
+*.ckpt-*
+*.ckpt.*
+*.data-00000-of-00001
+*.meta
+
+# DDMSNet / StarNet 的无扩展名权重文件
+**/cityscapes_DDMSNet
+**/kitti_DDMSNet
+**/kitti_eigen
+**/cityscapes_best
+**/snow100k_DDMSNet
+
+# ===== 数据集（大文件，单独下载/生成） =====
+dataset/LQ/
+dataset/FoundIR-Weather/
+dataset/WeatherStream_test/
+dataset/haze/
+dataset/rain/
+dataset/snow/
+dataset/multi/
+
+# ===== 第三方仓库 =====
+third_party_desnow_old/
+third_party_desnow_new/
+
+# ===== Python =====
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+*.egg/
+*.so
+.venv/
+
+# env 目录：忽略所有，仅保留环境清单
+env/*
+!env/env_inventory_full_*.md
+
+# ===== HuggingFace 缓存 =====
+.cache/
+.cache/huggingface/
+
+# ===== 嵌套临时目录 =====
+weather_agent/
+
+# ===== IDE / 系统 =====
+.DS_Store
+.vscode/
+.idea/

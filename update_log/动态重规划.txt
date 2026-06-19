@@ -1,0 +1,43 @@
+我帮你改了什么
+1) task_planner.py
+增加了 step_to_label 映射（derain->rain, dehaze->haze, desnow->snow）。
+_plan_via_isolated_env(...) 支持传入自定义 prompt（用于局部重规划时注入失败经验）。
+新增局部重规划能力：
+build_local_replan_prompt(...)
+local_replan(...)
+local_replan(...) 会：
+只在“当前任务及后续任务集合”内重排；
+把失败经验放进提示词；
+若Qwen失败则回退原顺序（稳定保底）。
+2) restoration_agent.py
+我把执行策略从“score-penalty选下一步”改成你要的“执行后再感知 + 局部重规划”：
+
+每执行完一步就重新感知当前图像退化（Llama）。
+若当前任务对应退化已消除：
+继续后续；
+自动跳过“已不明显退化”的后续任务。
+若当前任务对应退化仍存在：
+记录失败经验（如：dehaze 作为当前优先任务对该图像去haze效果不足）；
+仅对当前及后续任务做局部重规划（不会把已执行步骤放回去）；
+避免重复把失败任务继续放首位（有替代时）。
+增加上限控制：
+LOCAL_REPLAN_MAX（默认 3）
+LOCAL_REPLAN_MAX_FIRST_PRIORITY（默认 3，对应你“三种首任务最多尝试三次”）
+达到上限后：
+回退到“初始无经验计划的当前后缀”继续执行（计划回退，不是图像回退），与你描述一致。
+你现在可用的开关（默认值）
+ENABLE_LOCAL_REPLAN=1：启用新动态局部重规划
+LOCAL_REPLAN_MAX=3
+LOCAL_REPLAN_MAX_FIRST_PRIORITY=3
+TASK_PLANNER_LOCK_PLAN=1 时会禁用局部重规划（保持确定性）
+评估结论（简短）
+你的方案在工程上是正确方向，优点是：
+
+真正“闭环”；
+失败经验可累积；
+局部重规划不污染已执行历史；
+有上限防止死循环；
+有回退策略保证可完成性。
+如果你要，我下一步可以再给你补一版：
+
+把“失败经验/重规划次数/回退触发”写入每个样本的 planner_info.json，方便你论文画流程统计图（触发率、回退率、平均重规划次数）。

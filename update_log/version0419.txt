@@ -1,0 +1,17 @@
+进度更新：代码改造和诊断都完成了，自动重标定链路也跑通；我刚做的是确认副作用文件情况。下一步我会给你一个精简结论，说明当前规则已按你确认值落地，以及现在如何查看版本号和新 L/U。
+
+已按你确认的规则落地，并且生效：
+
+触发条件已改为“按指标独立监控”，默认是 clip 率 > 10%，连续 2 个窗口触发重标定。实现位置见 quality_evaluator.py:82 和 quality_evaluator.py:338。
+重标定逻辑是“最近样本重算 P5/P95，再加 15% 缓冲得到新 L/U”。实现位置见 quality_evaluator.py:298。
+新 L/U 会写回运行中的 active bounds，并自动版本号递增。实现位置见 quality_evaluator.py:312。
+每次重标定都会记录版本事件（jsonl）并保存最新快照（json）。实现位置见 quality_evaluator.py:275 和 quality_evaluator.py:293。
+当前可直接查看：
+
+版本日志文件：qe_bounds_versions.jsonl
+最新边界快照：qe_bounds_latest.json
+运行时状态接口：get_clip_monitor_status，见 quality_evaluator.py:378
+校验结果：
+
+文件诊断通过，无语法错误。
+用小窗口压测时，版本号已发生递增，说明触发-重标定-落盘链路可用。

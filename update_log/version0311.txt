@@ -1,0 +1,47 @@
+环境问题解决：
+
+第一次修改：
+所有专家统一走 WEATHER_AGENT_ENV（默认 weather_agent），见 utils/tool.py
+新增单环境安装脚本： scripts/setup_weather_env.sh。
+README 改为单环境方案说明，见 README.md。
+
+RIDCP专家环境：
+RIDCP 当前目录里确实没有 dcn/src 源码，不是编译器问题而是仓库内容缺失。
+下一步我会检查 deform_conv.py 是否支持无扩展回退，如果不支持，我会加一个“缺扩展时自动跳过 RIDCP 专家”的安全兜底，
+保证整条链路可运行。
+我找到可行修复：deform_conv_cuda.cpp 在你已有环境的 site-packages/basicsr/ops/dcn/src 里有，
+但 RIDCP 仓库本地没带 src。
+我会把 setup_weather_ridcp_env.sh 改成在编译前自动从当前 env 的 basicsr 复制 dcn/src 到 RIDCP 目录，
+再继续 build_ext。
+
+NAFNet专家环境：
+一是 requirements.txt 又把 numpy 升回了 2.x，二是 pip install basicsr==1.3.4.9 走了隔离构建，
+导致构建环境里看不到 torch。我先修脚本，再在现有环境里用非隔离方式安装并验证。
+
+本轮结果：
+
+ridcp 已修通：
+补齐了 RIDCP 缺失的 dcn/src 源码
+用 gcc/g++ 10 成功编译 DCN 扩展
+修复了 NumPy 2.x 与 torch 1.13.1 的兼容问题
+真实调度验证通过，生成输出见 outputs_route1_verify/dehaze_ridcp/output/output.png
+nafnet 已修通：
+改为按项目真实运行方式用 PYTHONPATH 调本地代码
+避开失败的 setup.py develop
+修复了 NumPy 2.x 兼容问题
+真实调度验证通过，生成输出见 outputs_route1_verify/denoise_nafnet/output/output.png
+已更新：
+
+RIDCP 环境脚本：scripts/setup_weather_ridcp_env.sh
+NAFNet 环境脚本：scripts/setup_weather_nafnet_env.sh
+项目说明：README.md
+smoke 报告：EXPERT_SMOKE_REPORT.md
+当前结论：
+
+Route 1 已落地成功：项目独立、内部多环境自动分发
+当前 13/13 专家可用
+tool.py 的环境路由已能正确把 ridcp 分发到 weather_agent_ridcp，把 nafnet 分发到 weather_agent_nafnet
+我实际验证过的真实运行：
+
+ridcp：PASS
+nafnet：PASS

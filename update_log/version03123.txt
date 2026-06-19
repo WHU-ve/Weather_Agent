@@ -1,0 +1,26 @@
+我已经完整定位并修复：
+
+根因
+DiffPlugin 代码里的 SCB 模块依赖旧版 diffusers API。
+你主环境里的 diffusers 版本较新，触发报错：get_down_block() got an unexpected keyword argument attn_num_head_channels。
+处理
+新建了独立环境路由给 DiffPlugin，不再和主环境冲突。
+关键版本固定为：torch 2.1.0+cu118、diffusers 0.17.0、transformers 4.37.2、huggingface_hub 0.25.2。
+代码改动
+路由新增 diffplugin 独立环境：
+utils/tool.py
+新增 DiffPlugin 专用依赖：
+requirements/requirements_weather_agent_diffplugin.txt
+新增 DiffPlugin 环境安装脚本：
+scripts/setup_weather_diffplugin_env.sh
+总环境脚本已接入：
+scripts/setup_weather_all_envs.sh
+我也做了结果验证：
+
+端到端输出存在：
+outputs_test_diffplugin_ok/temp_derain_diffplugin/output/output.png
+outputs_test_diffplugin_ok/final_output.png
+你之前那条 FileNotFoundError（No image found in .../temp_derain_diffplugin/input）是因为你手动单跑时输入目录为空，不是 DiffPlugin 本体坏了。
+
+现在你可以直接正常跑：
+bash run_project.sh dataset/LQ/example.png outputs_test_diffplugin_ok

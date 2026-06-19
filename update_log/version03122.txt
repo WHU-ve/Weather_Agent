@@ -1,0 +1,35 @@
+已修改
+
+去雨工具箱新增 Restormer 和 DiffPlugin：
+utils/deraining/init.py
+规划器新增“高雨自动二次去雨”：当雨概率超过 TASK_HIGH_RAIN_THRESHOLD（默认 0.85）时，计划会变为 ['derain','derain', ...]：
+task_planner.py
+验证结果
+
+当前去雨工具箱已是：['mprnet','maxim','xrestormer','restormer','diffplugin']
+低雨输入计划：['derain']
+高雨输入计划：['derain','derain']
+
+你这个判断很对：要“更清晰 + 雨尽量去干净”，只靠现在这三个去雨专家不一定够。
+从 4KAgent 看，你还能借用这些任务/工具来加强：
+4KAgent里能提高清晰度的任务
+
+超分任务 super_resolution：最直接提升细节锐度，见 executor/super_resolution/init.py
+去运动模糊 motion_deblurring：对“雨后残留拖影/糊感”很有效，见 executor/motion_deblurring/init.py
+去散焦模糊 defocus_deblurring：对边缘发软有效（在 4KAgent 里有完整子任务）
+去JPEG压缩伪影：可减少块效应和边缘脏纹（如果输入有压缩损伤）
+4KAgent里更强的去雨专家（你项目里目前还没全引入）
+
+4KAgent deraining含：MPRNet、MAXIM、X-Restormer、Restormer、DiffPlugin，见 executor/deraining/init.py
+你当前 weather_agent 只有：MPRNet、MAXIM、XRestormer，见 utils/deraining/init.py
+所以最值得加的两位是 Restormer 和 DiffPlugin（对残余雨丝常有补充收益）
+“能不能完全去除雨”
+
+结论：不能保证 100% 完全去除且无副作用。
+原因：重雨纹和真实纹理会重叠，过强去雨会把草地/山体细节一起抹掉，变糊。
+你现在最有效的策略（按优先级）
+
+先把去雨专家扩展为 5 个（加 Restormer + DiffPlugin）
+对高雨图执行两阶段：derain → derain（第二次只在高雨置信度时触发）
+去噪阈值提高（你已做对），避免不必要 denoise 抹细节
+最后加一个轻量清晰化步骤：motion_deblurring 或 super_resolution 二选一，不要两者都重度用

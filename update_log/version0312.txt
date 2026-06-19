@@ -1,0 +1,2 @@
+一次运行命令：bash scripts/run_project.sh dataset/LQ/example.png outputs_batch
+

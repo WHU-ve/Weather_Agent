@@ -1,0 +1,29 @@
+cd /root/project/huangchao/zhengyanggong/weather_agent && /root/project/huangchao/anaconda3/envs/weather_agent/bin/python main.py --input dataset/multi/WeatherBench/snow/test/input/456.jpg --output /tmp/weather_agent_456_run
+运行命令
+
+这 4 个更适合做“整体质量兜底分”，不适合单独决定是 rain/haze/snow。
+
+Rain 任务的专属/主导指标
+Rain residual score: 主指标（你 prompt 已明确，高值更像 rain）
+Local contrast: 辅助指标（雨条纹和雾化会拉低对比度）
+Edge continuity: 辅助指标（结构连续性差时可辅助判断降质严重）
+Haze 任务的专属/主导指标
+Fog density score / FADE: 主指标（高值更像 haze）
+Local contrast: 主辅助（低对比是 haze 的核心表现）
+Edge continuity: 辅助（雾会弱化边缘连续性）
+Snow 任务的专属/主导指标
+Bright artifact ratio: 主指标（你 prompt 已明确，高值更像 snow）
+Edge continuity: 主辅助（雪点/遮挡会破坏结构连续）
+Local contrast: 辅助（雪雾化也会影响局部对比）
+你在“多专家选择打分阶段”建议这样用
+Rain 专家打分主要看 Rain residual score。
+Haze 专家打分主要看 Fog density/FADE。
+Snow 专家打分主要看 Bright artifact ratio。
+Local contrast 和 Edge continuity作为三个任务的共享辅助项。
+最后再叠加通用指标做质量校正，不要让通用指标盖过任务专属指标。
+
+可以直接给你一个可落地的任务选择权重模板（只用你 prompt 里的指标）:
+
+RainScore = 0.55RainResidual + 0.25(1-LocalContrast) + 0.20*(1-EdgeContinuity)
+HazeScore = 0.55FogDensity + 0.30(1-LocalContrast) + 0.15*(1-EdgeContinuity)
+SnowScore = 0.55BrightArtifactRatio + 0.30(1-EdgeContinuity) + 0.15*(1-LocalContrast)

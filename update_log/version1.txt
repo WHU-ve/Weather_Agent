@@ -1,0 +1,43 @@
+项目已创建
+
+weather_agent/
+├── main.py                    # 主入口
+├── perception_module.py       # 感知模块（多标签分类）
+├── task_planner.py            # 任务规划（经验规则库）
+├── restoration_agent.py       # 恢复执行（多专家 + 选择）
+├── quality_evaluator.py       # 质量评价（综合分数）
+├── requirements.txt           # 依赖
+├── README.md                  # 说明
+├── scripts/
+│   ├── synthesize.py          # 数据合成（从 4KAgent 复制）
+│   ├── image_degradations.py  # 退化函数
+│   └── train_perception.py    # 训练感知模块
+├── utils/                     # 从 4KAgent 复制的工具
+│   ├── deraining/
+│   ├── dehazing/
+│   ├── denoising/
+│   ├── multitask_tools.py
+│   └── tool.py
+├── data/                      # 数据集目录
+├── models/                    # 模型保存
+└── ...
+
+关键实现细节
+Perception Module：基于开源 CLIP 视觉语言模型的零-shot多标签检测，输出 [Prain, Phaze, Pnoise]，无需训练。
+
+Task Planner：经验规则库基于常见组合：
+
+雨 → [derain]
+雾 → [dehaze]
+噪 → [denoise]
+雨+雾 → [derain, dehaze]
+雨+噪 → [derain, denoise]
+雾+噪 → [denoise, dehaze] # 修正：先去噪再去雾，因为去雾对噪声敏感，先清理噪声
+雨+雾+噪 → [derain, denoise, dehaze] # 修正：derain -> denoise -> dehaze
+Restoration Agent：按顺序执行，每个步骤运行多个专家（限制3个），用 Quality Evaluator 选最优。
+
+Quality Evaluator：Q = 0.4⋅CLIPIQA + 0.4⋅MUSIQ - 0.2⋅NIQE（已实现，使用 pyiqa 库）。
+
+数据集：使用 4KAgent 的合成方式，针对 derain/dehaze/denoise 生成 LQ 数据（已复制脚本）。
+
+模型：工具箱已复制，预训练权重需下载到 pretrained_ckpts/。

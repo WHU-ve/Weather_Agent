@@ -1,0 +1,20 @@
+模型加载：
+使用 OpenAI 开源的轻量级预训练模型 ViT-B/32 版本的 CLIP。
+
+构建对比提示词（Prompt Engineering）：
+针对你要处理的三种任务（["rain", "haze", "noise"]），代码中为每一种退化构建了一正一反两个英文短句：
+
+正向提示词（Positive）："a photo of {rain/haze/noise}" （一张有雨/雾/噪声的照片）
+负向提示词（Negative）："a photo without {rain/haze/noise}"（一张没有雨/雾/噪声的照片）
+零样本推理（Zero-shot Inference）：
+
+将输入的待处理图片通过 CLIP 视觉编码器提取出图像特征。
+把上述的正负两句文本通过 CLIP 文本编码器提取出文本特征。
+计算图像特征与两句文本特征的余弦相似度，并使用 Softmax 得到概率。
+输出退化概率：
+提取出正向提示词匹配的概率，最终返回一个长度为3的向量 [P_rain, P_haze, P_noise]，取值均在 [0,1] 之间。
+
+总结来说：
+它就像一个“裁判”，你看不到它训练的过程，但项目一启动，后续的 task_planner.py （任务规划器）
+就会直接拿 CLIP 算出来的这个 [P_rain, P_haze, P_noise] 概率向量（比如 [0.9, 0.1, 0.8] 表示有很大的雨和噪声，
+但没雾），来制定组合调用哪几个专家模型（Restormer/NAFNet等）修复图片的策略。
